@@ -177,6 +177,13 @@
 
 		socket.on('message', function(msg) {
 			$('.logs').append(msg+'&#13;&#10;');
+			if (!(msg == 'Connecting...' || msg =='Whatsapp is ready!')) {
+				$('.status').empty().append(
+						'<div class="alert alert-info" role="alert">\n' +
+						msg +
+						'</div>'
+				);
+			}
 		});
 
 		socket.on('qr', function(src) {
