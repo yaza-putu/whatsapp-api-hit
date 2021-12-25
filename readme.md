@@ -11,7 +11,8 @@ As because Whatsapp regularly makes an update, so we needs to always **use the l
 - Clone or download this repo
 - Enter to the project directory
 - Run `npm install`
-- Run `npm run dev`
+- Run `npm run dev` for development (need install nodemon in localy)
+- or Run `npm run start`
 - Open browser and go to address `http://localhost:3000`
 - Scan the QR Code
 - Enjoy!
