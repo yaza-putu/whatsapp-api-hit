@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Whatsapp API Hit</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+	<style>
+		.doc {
+			overflow-x: scroll;
+			height: 600px;
+		}
+		.doc::-webkit-scrollbar {
+			-webkit-appearance: none;
+			width: 7px;
+		}
+
+		.doc::-webkit-scrollbar-thumb {
+			border-radius: 4px;
+			background-color: rgba(0, 0, 0, .5);
+			box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+		}
+	</style>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6">
+			<div id="app">
+				<h1>Whatsapp API</h1>
+				<div class="status">
+					<div class="alert alert-warning" role="alert">
+						Connecting, Please wait...!
+					</div>
+				</div>
+				<img src="http://ajaxloadingimages.net/gif/image?imageid=simplebar&forecolor=000000&backcolor=ffffff" alt="QR Code" id="qrcode">
+				<h3>Logs:</h3>
+				<textarea cols="30" rows="10" class="form-control logs"></textarea>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<h1>Documentations</h1>
+			<div class="row doc">
+				<div class="col-md-12">
+					<label>Send Message</label>
+					<input type="text" readonly value="/send-message" class="form-control">
+					<div class="table-responsive">
+						<table class="table">
+							<tbody>
+								<tr>
+									<td>Method</td>
+									<td>POST</td>
+								</tr>
+								<tr>
+									<td>Body</td>
+									<td>
+										<table>
+											<thead>
+												<tr>
+													<th>Key</th>
+													<th>Type</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>number</td>
+													<td>string</td>
+												</tr>
+												<tr>
+													<td>message</td>
+													<td>string</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<label>Send Media</label>
+					<input type="text" readonly value="/send-media" class="form-control">
+					<div class="table-responsive">
+						<table class="table">
+							<tbody>
+							<tr>
+								<td>Method</td>
+								<td>POST</td>
+							</tr>
+							<tr>
+								<td>Body</td>
+								<td>
+									<table>
+										<thead>
+										<tr>
+											<th>Key</th>
+											<th>Type</th>
+										</tr>
+										</thead>
+										<tbody>
+										<tr>
+											<td>number</td>
+											<td>string</td>
+										</tr>
+										<tr>
+											<td>caption</td>
+											<td>string</td>
+										</tr>
+										<tr>
+											<td>file</td>
+											<td>file</td>
+										</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<label>Send Media Url</label>
+					<input type="text" readonly value="/send-media-url" class="form-control">
+					<div class="table-responsive">
+						<table class="table">
+							<tbody>
+							<tr>
+								<td>Method</td>
+								<td>POST</td>
+							</tr>
+							<tr>
+								<td>Body</td>
+								<td>
+									<table>
+										<thead>
+										<tr>
+											<th>Key</th>
+											<th>Type</th>
+										</tr>
+										</thead>
+										<tbody>
+										<tr>
+											<td>number</td>
+											<td>string</td>
+										</tr>
+										<tr>
+											<td>caption</td>
+											<td>string</td>
+										</tr>
+										<tr>
+											<td>file_url</td>
+											<td>text</td>
+										</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+	$(document).ready(function() {
+		var socket = io();
+
+		socket.on('message', function(msg) {
+			$('.logs').append(msg+'&#13;&#10;');
+		});
+
+		socket.on('qr', function(src) {
+			$('.status').empty().append(
+				'<div class="alert alert-info" role="alert">\n' +
+				' Scan QR Code Here :' +
+				'</div>'
+			);
+			$('#qrcode').attr('src', src);
+			$('#qrcode').show();
+		});
+
+		socket.on('ready', function(data) {
+			$('#qrcode').hide();
+			$('.status').empty().append(
+					'<div class="alert alert-success" role="alert">\n' +
+					' Whatsapp is ready!' +
+					'</div>'
+			);
+		});
+
+		socket.on('authenticated', function(data) {
+			$('#qrcode').hide();
+		});
+	});
+</script>
+</body>
+</html>
