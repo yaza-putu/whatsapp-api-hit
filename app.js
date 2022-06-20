@@ -38,11 +38,21 @@ function checkToken(request) {
   }
 }
 
+const myId = 'SingleDeviceX';
+
+const authStrategy = new LocalAuth({
+  clientId: myId,
+  // dataPath: storage.sessionPath, // don't use dataPath to keep it default to ./wwwjs_auth
+});
+
+const worker = `${authStrategy.dataPath}/session-${myId}/Default/Service Worker`
+if (fs.existsSync(worker)) {
+  fs.rmSync(worker, { recursive: true })
+}
 
 const client = new Client({
   restartOnAuthFail: true,
   puppeteer: {
-    headless: true,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -54,7 +64,9 @@ const client = new Client({
       '--disable-gpu'
     ],
   },
-  authStrategy: new LocalAuth()
+  takeoverOnConflict: true,
+  takeoverTimeoutMs: 10,
+  authStrategy
 });
 
 client.on('message', msg => {
@@ -149,7 +161,6 @@ io.on('connection', function(socket) {
     socket.emit('message', 'Whatsapp is disconnected!');
     client.destroy();
     client.initialize();
-    fs.rmSync("/.wwebjs_auth", { recursive: true, force: true });
   });
 });
 
